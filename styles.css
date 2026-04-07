@@ -7,8 +7,8 @@
 }
 
 @font-face {
-  font-family: "Cavalhatriz";
-  src: url("./fonts%3A/Cavalhatriz.ttf") format("truetype");
+  font-family: "Alagard";
+  src: url("./fonts%3A/alagard.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -38,7 +38,7 @@ body {
 .weather-title,
 .weather-card-title,
 .graph-title {
-  font-family: "Cavalhatriz", "Dogica", sans-serif;
+  font-family: "Alagard", "Dogica", sans-serif;
 }
 
 .page {
