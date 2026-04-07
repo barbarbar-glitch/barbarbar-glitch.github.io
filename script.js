@@ -147,37 +147,74 @@ function hourLabel(isoTime) {
 }
 
 async function loadBandungWeather() {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${BANDUNG_LAT}&longitude=${BANDUNG_LON}&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m&hourly=temperature_2m,precipitation_probability&timezone=Asia%2FJakarta&forecast_days=2`;
-  const res = await fetch(url);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  const url =
+    `https://api.open-meteo.com/v1/forecast?latitude=${BANDUNG_LAT}` +
+    `&longitude=${BANDUNG_LON}` +
+    `&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m` +
+    `&hourly=temperature_2m,precipitation_probability,relative_humidity_2m` +
+    `&timezone=Asia%2FJakarta&forecast_days=2`;
+
+  const res = await fetch(url, { signal: controller.signal });
+  clearTimeout(timeoutId);
   if (!res.ok) throw new Error("Weather API failed");
   const data = await res.json();
 
-  const current = data.current;
-  weatherEls.temp.textContent = `${current.temperature_2m.toFixed(1)}°C`;
-  weatherEls.condition.textContent = weatherCodeMap[current.weather_code] || "Unknown";
-  weatherEls.wind.textContent = `${current.wind_speed_10m.toFixed(1)} km/h`;
-  weatherEls.humidity.textContent = `${Math.round(current.relative_humidity_2m)}%`;
-  weatherEls.time.textContent = `${hourLabel(current.time)} local`;
-
-  const startIdx = data.hourly.time.findIndex((t) => t === current.time);
+  const current = data.current || {};
+  const hourly = data.hourly || {};
+  const hourlyTimes = Array.isArray(hourly.time) ? hourly.time : [];
+  const startIdx = hourlyTimes.findIndex((t) => t === current.time);
   const i0 = startIdx >= 0 ? startIdx : 0;
   const i1 = i0 + 24;
 
-  const times = data.hourly.time.slice(i0, i1).map(hourLabel);
-  const temps = data.hourly.temperature_2m.slice(i0, i1);
-  const rain = data.hourly.precipitation_probability.slice(i0, i1);
+  const times = hourlyTimes.slice(i0, i1).map(hourLabel);
+  const temps = (hourly.temperature_2m || []).slice(i0, i1);
+  const rain = (hourly.precipitation_probability || []).slice(i0, i1);
+  const humidities = (hourly.relative_humidity_2m || []).slice(i0, i1);
 
-  const minTemp = Math.floor(Math.min(...temps) - 1);
-  const maxTemp = Math.ceil(Math.max(...temps) + 1);
+  const currentTemp = Number(current.temperature_2m);
+  const currentWind = Number(current.wind_speed_10m);
+  const currentHumidity = Number(current.relative_humidity_2m);
+  const fallbackHumidity = humidities.length ? humidities[0] : NaN;
 
-  drawLineChart(tempCanvas, temps, times, "°", minTemp, maxTemp);
-  drawBarChart(rainCanvas, rain, times);
+  weatherEls.temp.textContent = Number.isFinite(currentTemp) ? `${currentTemp.toFixed(1)}°C` : "--.-°C";
+  weatherEls.condition.textContent = weatherCodeMap[current.weather_code] || "Weather live";
+  weatherEls.wind.textContent = Number.isFinite(currentWind) ? `${currentWind.toFixed(1)} km/h` : "--.- km/h";
+  weatherEls.humidity.textContent = Number.isFinite(currentHumidity)
+    ? `${Math.round(currentHumidity)}%`
+    : Number.isFinite(fallbackHumidity)
+      ? `${Math.round(fallbackHumidity)}%`
+      : "--%";
+  weatherEls.time.textContent = current.time ? `${hourLabel(current.time)} local` : "--:-- local";
+
+  if (times.length >= 2 && temps.length >= 2 && rain.length >= 2) {
+    const minTemp = Math.floor(Math.min(...temps) - 1);
+    const maxTemp = Math.ceil(Math.max(...temps) + 1);
+    drawLineChart(tempCanvas, temps, times, "°", minTemp, maxTemp);
+    drawBarChart(rainCanvas, rain, times);
+  } else {
+    throw new Error("Insufficient hourly weather data");
+  }
 }
 
 function showWeatherError() {
+  weatherEls.temp.textContent = "--.-°C";
+  weatherEls.wind.textContent = "--.- km/h";
+  weatherEls.humidity.textContent = "--%";
   weatherEls.condition.textContent = "Unable to load live weather now";
   weatherEls.time.textContent = "Please refresh later";
 }
 
-loadBandungWeather().catch(showWeatherError);
+if (
+  weatherEls.temp &&
+  weatherEls.condition &&
+  weatherEls.wind &&
+  weatherEls.humidity &&
+  weatherEls.time &&
+  tempCanvas &&
+  rainCanvas
+) {
+  loadBandungWeather().catch(showWeatherError);
+}
 
