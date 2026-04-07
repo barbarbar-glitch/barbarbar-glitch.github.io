@@ -268,7 +268,7 @@ main {
   max-width: 100%;
   text-transform: none;
   letter-spacing: 0.04em;
-  line-height: 1.6;
+  line-height: 1.9;
   overflow-wrap: anywhere;
 }
 
@@ -489,7 +489,7 @@ main {
   .footer-note {
     font-size: 10px;
     letter-spacing: 0.03em;
-    line-height: 1.55;
+    line-height: 1.85;
   }
 }
 
