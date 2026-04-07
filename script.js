@@ -84,8 +84,10 @@ function drawLineChart(canvas, values, labels, ySuffix, yMin, yMax) {
   ctx.stroke();
 
   ctx.fillStyle = "#000000";
-  [0, 6, 12, 18, 23].forEach((idx) => {
-    const x = left + (idx / 23) * plotW;
+  const tickIndexes = [0, 6, 12, 18, 23].filter((idx) => idx < labels.length);
+  tickIndexes.forEach((idx) => {
+    const ratio = labels.length > 1 ? idx / (labels.length - 1) : 0;
+    const x = left + ratio * plotW;
     ctx.fillText(labels[idx], x - 10, height - 8);
   });
 }
@@ -123,7 +125,7 @@ function drawBarChart(canvas, values, labels) {
     ctx.fillText(`${pct}%`, 8, y + 4);
   }
 
-  const barW = plotW / values.length;
+  const barW = plotW / Math.max(1, values.length);
   values.forEach((value, i) => {
     const h = (value / 100) * plotH;
     const x = left + i * barW + 1;
@@ -135,8 +137,10 @@ function drawBarChart(canvas, values, labels) {
   });
 
   ctx.fillStyle = "#000000";
-  [0, 6, 12, 18, 23].forEach((idx) => {
-    const x = left + (idx / 23) * plotW;
+  const tickIndexes = [0, 6, 12, 18, 23].filter((idx) => idx < labels.length);
+  tickIndexes.forEach((idx) => {
+    const ratio = labels.length > 1 ? idx / (labels.length - 1) : 0;
+    const x = left + ratio * plotW;
     ctx.fillText(labels[idx], x - 10, height - 8);
   });
 }
@@ -204,9 +208,21 @@ function updateWeatherUI(series) {
     const maxTemp = Math.ceil(Math.max(...temps) + 1);
     drawLineChart(tempCanvas, temps, times, "°", minTemp, maxTemp);
     drawBarChart(rainCanvas, rain, times);
-  } else {
-    throw new Error("Insufficient hourly weather data");
   }
+}
+
+function drawOfflineFallbackGraphs() {
+  const labels = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, "0")}:00`);
+  const fallbackTemps = [
+    22, 22, 21, 21, 20, 20, 21, 23, 25, 27, 28, 29,
+    29, 30, 30, 29, 28, 27, 26, 25, 24, 24, 23, 22,
+  ];
+  const fallbackRain = [
+    10, 10, 8, 8, 8, 10, 12, 20, 28, 35, 40, 45,
+    50, 55, 58, 50, 42, 36, 30, 24, 18, 14, 12, 10,
+  ];
+  drawLineChart(tempCanvas, fallbackTemps, labels, "°", 19, 31);
+  drawBarChart(rainCanvas, fallbackRain, labels);
 }
 
 async function loadBandungWeather() {
@@ -246,11 +262,12 @@ async function loadBandungWeather() {
 }
 
 function showWeatherError() {
-  weatherEls.temp.textContent = "--.-°C";
-  weatherEls.wind.textContent = "--.- km/h";
-  weatherEls.humidity.textContent = "--%";
-  weatherEls.condition.textContent = "Unable to load live weather now";
-  weatherEls.time.textContent = "Please refresh later";
+  weatherEls.temp.textContent = "26.0°C";
+  weatherEls.wind.textContent = "7.0 km/h";
+  weatherEls.humidity.textContent = "74%";
+  weatherEls.condition.textContent = "Live weather unavailable";
+  weatherEls.time.textContent = "Showing fallback pattern";
+  drawOfflineFallbackGraphs();
 }
 
 if (
