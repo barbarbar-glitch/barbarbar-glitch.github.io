@@ -166,26 +166,49 @@ main {
 }
 
 .spotify-dropdown {
-  border: 2px solid #000000;
-  background: #ffffff;
+  position: relative;
+  align-self: flex-start;
 }
 
 .spotify-summary {
   list-style: none;
-  padding: 10px 12px;
-  font-size: 12px;
+  padding: 4px 0;
+  font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   cursor: pointer;
-  border-bottom: 2px solid #000000;
+  border-bottom: 1px solid #000000;
+  user-select: none;
 }
 
 .spotify-summary::-webkit-details-marker {
   display: none;
 }
 
+.spotify-summary::after {
+  content: " \25BE";
+  font-size: 10px;
+}
+
+.spotify-dropdown[open] .spotify-summary::after {
+  content: " \25B4";
+}
+
 .spotify-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: min(340px, 92vw);
+  background: #ffffff;
+  border: 2px solid #000000;
   padding: 8px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+  z-index: 25;
+}
+
+.spotify-dropdown[open] .spotify-panel {
+  display: block;
 }
 
 .spotify-panel iframe {
@@ -306,6 +329,10 @@ main {
   .spotify-summary {
     font-size: 11px;
     letter-spacing: 0.14em;
+  }
+
+  .spotify-panel {
+    width: min(300px, 88vw);
   }
 
   .site-footer {
