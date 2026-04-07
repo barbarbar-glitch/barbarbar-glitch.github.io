@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My First Proper Webpage</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
   </head>
   <body>
     <div class="page">
@@ -73,6 +74,43 @@
                 ></iframe>
               </div>
             </details>
+          </div>
+        </section>
+
+        <section class="weather-section" aria-labelledby="weather-title">
+          <h2 id="weather-title" class="weather-title">
+            LIVE WEATHER REPORT / BANDUNG, WEST JAVA, INDONESIA
+          </h2>
+
+          <div class="weather-meta-grid">
+            <article class="weather-card">
+              <h3 class="weather-card-title">CURRENT</h3>
+              <p class="weather-main" id="weather-current-temp">--.-°C</p>
+              <p class="weather-sub" id="weather-current-condition">Loading...</p>
+            </article>
+
+            <article class="weather-card">
+              <h3 class="weather-card-title">WIND</h3>
+              <p class="weather-main" id="weather-current-wind">--.- km/h</p>
+              <p class="weather-sub" id="weather-current-time">--:-- local</p>
+            </article>
+
+            <article class="weather-card">
+              <h3 class="weather-card-title">HUMIDITY</h3>
+              <p class="weather-main" id="weather-current-humidity">--%</p>
+              <p class="weather-sub">Relative humidity</p>
+            </article>
+          </div>
+
+          <div class="graph-grid">
+            <article class="graph-card">
+              <h3 class="graph-title">24H TEMPERATURE TREND</h3>
+              <canvas id="tempChart" width="600" height="260" aria-label="Temperature chart"></canvas>
+            </article>
+            <article class="graph-card">
+              <h3 class="graph-title">24H PRECIPITATION CHANCE</h3>
+              <canvas id="rainChart" width="600" height="260" aria-label="Rain chance chart"></canvas>
+            </article>
           </div>
         </section>
 
