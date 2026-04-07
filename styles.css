@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Dogica";
-  src: url("fonts:/dogica.ttf") format("truetype");
+  src: url("./fonts%3A/dogica.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: "Cavalhatriz";
-  src: url("fonts:/Cavalhatriz.ttf") format("truetype");
+  src: url("./fonts%3A/Cavalhatriz.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
