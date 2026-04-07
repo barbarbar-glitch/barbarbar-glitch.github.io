@@ -147,10 +147,45 @@ main {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   text-decoration: none;
-  border-radius: 999px;
-  border: 1px solid #000000;
+  border-radius: 0;
+  border: none;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  position: relative;
+  image-rendering: pixelated;
+  clip-path: polygon(
+    0 34%,
+    6% 34%,
+    6% 16%,
+    12% 16%,
+    12% 0,
+    88% 0,
+    88% 16%,
+    94% 16%,
+    94% 34%,
+    100% 34%,
+    100% 66%,
+    94% 66%,
+    94% 84%,
+    88% 84%,
+    88% 100%,
+    12% 100%,
+    12% 84%,
+    6% 84%,
+    6% 66%,
+    0 66%
+  );
+  transition: transform 0.15s ease, filter 0.2s ease;
+  isolation: isolate;
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid #000000;
+  clip-path: inherit;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .btn-primary {
@@ -159,8 +194,8 @@ main {
 }
 
 .btn-primary:hover {
-  background-color: #ffffff;
-  color: #000000;
+  filter: invert(1);
+  transform: translate(1px, 1px);
 }
 
 .btn-secondary {
@@ -171,6 +206,7 @@ main {
 .btn-secondary:hover {
   background-color: #000000;
   color: #ffffff;
+  transform: translate(1px, 1px);
 }
 
 .hero-graphic-wrapper {
@@ -182,7 +218,7 @@ main {
 
 .hero-graphic {
   border: 2px solid #000000;
-  border-radius: 8px;
+  border-radius: 0;
   height: 340px;
   background-color: #ffffff;
   background-image: url("knight-riding-cat-edit.png");
