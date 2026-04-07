@@ -25,12 +25,14 @@
 html,
 body {
   height: 100%;
+  overflow-x: hidden;
 }
 body {
   font-family: "Dogica", system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Segoe UI", sans-serif;
   background-color: #ffffff;
   color: #000000;
+  overflow-x: hidden;
 }
 
 .brand-name,
@@ -46,10 +48,11 @@ body {
   background-color: #ffffff;
   color: #000000;
   padding: 24px;
+  overflow-x: clip;
 }
 
 main {
-  max-width: 1200px;
+  width: min(1200px, 100%);
   margin: 0 auto;
 }
 
@@ -262,6 +265,11 @@ main {
 
 .footer-note {
   opacity: 0.7;
+  max-width: 100%;
+  text-transform: none;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 .weather-section {
@@ -470,9 +478,18 @@ main {
   }
 
   .site-footer {
+    display: block;
     font-size: 10px;
     letter-spacing: 0.1em;
-    gap: 10px;
+    gap: 0;
+    padding-top: 12px;
+    margin-top: 18px;
+  }
+
+  .footer-note {
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    line-height: 1.55;
   }
 }
 
@@ -490,5 +507,16 @@ main {
 
   .graph-card canvas {
     height: 180px;
+  }
+
+  .page {
+    padding: 10px;
+  }
+
+  .hero-title,
+  .weather-title,
+  .hero-subtitle,
+  .footer-note {
+    overflow-wrap: anywhere;
   }
 }
