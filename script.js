@@ -146,47 +146,58 @@ function hourLabel(isoTime) {
   return `${String(d.getHours()).padStart(2, "0")}:00`;
 }
 
-async function loadBandungWeather() {
+async function fetchJsonWithTimeout(url, timeoutMs = 15000) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
-  const url =
-    `https://api.open-meteo.com/v1/forecast?latitude=${BANDUNG_LAT}` +
-    `&longitude=${BANDUNG_LON}` +
-    `&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m` +
-    `&hourly=temperature_2m,precipitation_probability,relative_humidity_2m` +
-    `&timezone=Asia%2FJakarta&forecast_days=2`;
-
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
   const res = await fetch(url, { signal: controller.signal });
   clearTimeout(timeoutId);
-  if (!res.ok) throw new Error("Weather API failed");
-  const data = await res.json();
+  if (!res.ok) throw new Error(`Weather API failed (${res.status})`);
+  return res.json();
+}
 
+function buildSeries(data) {
   const current = data.current || {};
+  const currentWeather = data.current_weather || {};
   const hourly = data.hourly || {};
   const hourlyTimes = Array.isArray(hourly.time) ? hourly.time : [];
-  const startIdx = hourlyTimes.findIndex((t) => t === current.time);
+
+  const currentTime = current.time || currentWeather.time || hourlyTimes[0];
+  const startIdx = hourlyTimes.findIndex((t) => t === currentTime);
   const i0 = startIdx >= 0 ? startIdx : 0;
   const i1 = i0 + 24;
 
   const times = hourlyTimes.slice(i0, i1).map(hourLabel);
   const temps = (hourly.temperature_2m || []).slice(i0, i1);
   const rain = (hourly.precipitation_probability || []).slice(i0, i1);
-  const humidities = (hourly.relative_humidity_2m || []).slice(i0, i1);
+  const humidities = (hourly.relative_humidity_2m || hourly.relativehumidity_2m || []).slice(i0, i1);
+  const winds = (hourly.wind_speed_10m || hourly.windspeed_10m || []).slice(i0, i1);
 
-  const currentTemp = Number(current.temperature_2m);
-  const currentWind = Number(current.wind_speed_10m);
-  const currentHumidity = Number(current.relative_humidity_2m);
-  const fallbackHumidity = humidities.length ? humidities[0] : NaN;
+  const currentTemp = Number(current.temperature_2m ?? currentWeather.temperature);
+  const currentWind = Number(current.wind_speed_10m ?? currentWeather.windspeed ?? winds[0]);
+  const currentHumidity = Number(current.relative_humidity_2m ?? humidities[0]);
 
-  weatherEls.temp.textContent = Number.isFinite(currentTemp) ? `${currentTemp.toFixed(1)}°C` : "--.-°C";
-  weatherEls.condition.textContent = weatherCodeMap[current.weather_code] || "Weather live";
+  return {
+    currentTime,
+    currentTemp,
+    currentWind,
+    currentHumidity,
+    weatherCode: Number(current.weather_code ?? currentWeather.weathercode),
+    times,
+    temps,
+    rain,
+  };
+}
+
+function updateWeatherUI(series) {
+  const { currentTime, currentTemp, currentWind, currentHumidity, weatherCode, times, temps, rain } = series;
+
+  weatherEls.temp.textContent = Number.isFinite(currentTemp)
+    ? `${currentTemp.toFixed(1)}°C`
+    : "--.-°C";
+  weatherEls.condition.textContent = weatherCodeMap[weatherCode] || "Weather live";
   weatherEls.wind.textContent = Number.isFinite(currentWind) ? `${currentWind.toFixed(1)} km/h` : "--.- km/h";
-  weatherEls.humidity.textContent = Number.isFinite(currentHumidity)
-    ? `${Math.round(currentHumidity)}%`
-    : Number.isFinite(fallbackHumidity)
-      ? `${Math.round(fallbackHumidity)}%`
-      : "--%";
-  weatherEls.time.textContent = current.time ? `${hourLabel(current.time)} local` : "--:-- local";
+  weatherEls.humidity.textContent = Number.isFinite(currentHumidity) ? `${Math.round(currentHumidity)}%` : "--%";
+  weatherEls.time.textContent = currentTime ? `${hourLabel(currentTime)} local` : "--:-- local";
 
   if (times.length >= 2 && temps.length >= 2 && rain.length >= 2) {
     const minTemp = Math.floor(Math.min(...temps) - 1);
@@ -196,6 +207,42 @@ async function loadBandungWeather() {
   } else {
     throw new Error("Insufficient hourly weather data");
   }
+}
+
+async function loadBandungWeather() {
+  const primaryUrl =
+    `https://api.open-meteo.com/v1/forecast?latitude=${BANDUNG_LAT}` +
+    `&longitude=${BANDUNG_LON}` +
+    `&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m` +
+    `&hourly=temperature_2m,precipitation_probability,relative_humidity_2m,wind_speed_10m` +
+    `&timezone=Asia%2FJakarta&forecast_days=2`;
+
+  const fallbackUrl =
+    `https://api.open-meteo.com/v1/forecast?latitude=${BANDUNG_LAT}` +
+    `&longitude=${BANDUNG_LON}` +
+    `&current_weather=true` +
+    `&hourly=temperature_2m,precipitation_probability,relativehumidity_2m,windspeed_10m` +
+    `&timezone=Asia%2FJakarta&forecast_days=2`;
+
+  const attempts = [
+    { url: primaryUrl, timeout: 15000 },
+    { url: primaryUrl, timeout: 20000 },
+    { url: fallbackUrl, timeout: 20000 },
+  ];
+
+  let lastError = null;
+  for (const attempt of attempts) {
+    try {
+      const data = await fetchJsonWithTimeout(attempt.url, attempt.timeout);
+      const series = buildSeries(data);
+      updateWeatherUI(series);
+      return;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  throw lastError || new Error("Weather load failed");
 }
 
 function showWeatherError() {
