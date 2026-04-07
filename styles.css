@@ -19,223 +19,300 @@ body {
 }
 
 .page {
-    min-height: 100vh;
-    background-color: #ffffff;
-    color: #000000;
-    padding: 24px;
-  }
-  .top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 2px solid #000000;
-    padding: 12px 24px;
-    margin-bottom: 32px;
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #000000;
+  padding: 24px;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 2px solid #000000;
+  padding: 12px 24px;
+  margin-bottom: 32px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.18em;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.brand-square {
+  width: 18px;
+  height: 18px;
+  border-radius: 2px;
+  background-color: #000000;
+}
+
+.nav {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  position: relative;
+}
+
+.nav-link {
+  list-style: none;
+  text-decoration: none;
+  color: #000000;
+  padding: 6px 10px;
+  border: 1px solid #000000;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.nav-link::-webkit-details-marker {
+  display: none;
+}
+
+.about-dropdown {
+  position: relative;
+}
+
+.dropdown-panel {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: min(340px, 92vw);
+  background: #ffffff;
+  border: 2px solid #000000;
+  padding: 8px;
+  z-index: 20;
+}
+
+.about-dropdown[open] .dropdown-panel {
+  display: block;
+}
+
+.dropdown-panel iframe {
+  width: 100%;
+  height: 152px;
+  border: 0;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 48px;
+  margin-bottom: 64px;
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hero-title {
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-subtitle {
+  max-width: 440px;
+  font-size: 14px;
+  line-height: 1.6;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 999px;
+  border: 1px solid #000000;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-primary {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #000000;
+}
+
+.btn-secondary:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.hero-graphic-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.hero-graphic {
+  border: 2px solid #000000;
+  border-radius: 8px;
+  height: 340px;
+  background-color: #ffffff;
+  background-image: url("knight-riding-cat.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.site-footer {
+  border-top: 2px solid #000000;
+  padding-top: 18px;
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.footer-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-note {
+  opacity: 0.7;
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 18px;
   }
 
-  .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    letter-spacing: 0.18em;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .brand-square {
-    width: 18px;
-    height: 18px;
-    border-radius: 2px;
-    background-color: #000000;
-  }
-  
-  .nav {
-    display: flex;
-    gap: 32px;
-    font-size: 13px;
-    letter-spacing: 0.2em;
-  }
-  .nav-link {
-    text-decoration: none;
-    color: #000000;
-    padding: 6px 10px;
-    border: 1px solid transparent;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-  }
-
-  .nav-link:hover {
-    background-color: #000000;
-    color: #ffffff;
-    border-color: #000000;
-  }
   .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-    gap: 48px;
-    margin-bottom: 64px;
-  }
-
-  .hero-text {
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 24px;
-  }
-  .hero-title {
-    font-size: clamp(36px, 5vw, 56px);
-    line-height: 1.1;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .hero-subtitle {
-    max-width: 440px;
-    font-size: 14px;
-    line-height: 1.6;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-  }
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 18px;
-    font-size: 12px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    text-decoration: none;
-    border-radius: 999px;
-    border: 1px solid #000000;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-  }
-  .btn-primary {
-    background-color: #000000;
-    color: #ffffff;
-  }
-
-  .btn-primary:hover {
-    background-color: #ffffff;
-    color: #000000;
-  }
-  .btn-secondary {
-    background-color: transparent;
-    color: #000000;
-  }
-  .btn-secondary:hover {
-    background-color: #000000;
-    color: #ffffff;
+    margin-bottom: 44px;
   }
 
   .hero-graphic-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: 12px;
+    order: -1;
   }
+
   .hero-graphic {
-    border: 2px solid #000000;
-    border-radius: 8px;
-    height: 280px;
-    background-color: #ffffff;
-    background-image: url("knight-riding-cat.jpg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    height: 320px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 12px;
   }
 
-  .panel-section {
-    border-top: 2px solid #000000;
-    padding-top: 32px;
-    padding-bottom: 40px;
-  }
-
-  .section-label {
-    font-size: 14px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-  .section-intro {
-    max-width: 560px;
-    font-size: 16px;
-    line-height: 1.7;
-    margin-bottom: 32px;
-  }
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px;
-  }
-
-  .info-card {
-    border: 2px solid #000000;
-    padding: 20px 20px 24px;
-    min-height: 160px;
-  }
-  .info-title {
-    font-size: 14px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .info-body {
-    font-size: 14px;
-    line-height: 1.7;
-  }
-  .site-footer {
-    border-top: 2px solid #000000;
-    padding-top: 18px;
-    margin-top: 24px;
-    display: flex;
-    flex-wrap: wrap;
+  .top-bar {
+    flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    padding: 10px 12px;
+    margin-bottom: 20px;
+  }
+
+  .brand {
     font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+    letter-spacing: 0.14em;
   }
 
-  .footer-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
- 
-  .footer-note {
-    opacity: 0.7;
+  .brand-square {
+    width: 14px;
+    height: 14px;
   }
 
-  @media (max-width: 900px) {
-    .hero {
-      grid-template-columns: 1fr;
-    }
-  
-    .hero-graphic-wrapper {
-        order: -1;
-      }
-    }
+  .nav {
+    gap: 8px;
+  }
 
-    @media (max-width: 640px) {
-        .page {
-          padding: 16px;
-        }
-        .top-bar {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 10px;
-        }
-        .nav {
-          gap: 16px;
-        }
-        .info-grid {
-          grid-template-columns: 1fr;
-        }
-      }   
-    
+  .nav-link {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    padding: 6px 8px;
+    border: 1px solid #000000;
+  }
+
+  .dropdown-panel {
+    right: -8px;
+    width: min(320px, 94vw);
+  }
+
+  .hero-text {
+    gap: 16px;
+  }
+
+  .hero-title {
+    font-size: clamp(26px, 9vw, 34px);
+    letter-spacing: 0.06em;
+  }
+
+  .hero-subtitle {
+    font-size: 11px;
+    line-height: 1.45;
+    letter-spacing: 0.1em;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    padding: 10px 12px;
+  }
+
+  .hero-graphic {
+    height: 240px;
+  }
+
+  .site-footer {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    gap: 10px;
+  }
+}
