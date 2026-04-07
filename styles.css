@@ -1,4 +1,19 @@
-styles.css
+@font-face {
+  font-family: "Dogica";
+  src: url("fonts:/dogica.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cavalhatriz";
+  src: url("fonts:/Cavalhatriz.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {
@@ -12,10 +27,18 @@ body {
   height: 100%;
 }
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+  font-family: "Dogica", system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Segoe UI", sans-serif;
   background-color: #ffffff;
   color: #000000;
+}
+
+.brand-name,
+.hero-title,
+.weather-title,
+.weather-card-title,
+.graph-title {
+  font-family: "Cavalhatriz", "Dogica", sans-serif;
 }
 
 .page {
